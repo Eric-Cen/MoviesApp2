@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MoviesApp2</string>
+    <string name="action_settings">Settings</string>
+    <string name="pref_sort_order_label">Sort Order By:</string>
+    <string name="pref_label_popularity">Popularity</string>
+    <string name="pref_label_average">Vote Average</string>
+    <string name="pref_sort_order_key">sort order</string>
+    <string name="pref_sort_order_by_popularity">popularity</string>
+    <string name="pref_sort_order_by_average">average</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="refresh_movie_data">Refresh Movie Data</string>
+    <string name="title_activity_movie_description">MovieDescription</string>
 </resources>
