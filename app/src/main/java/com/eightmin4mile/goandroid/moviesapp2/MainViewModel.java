@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.Menu;
 
 import com.eightmin4mile.goandroid.moviesapp2.data.AppDatabase;
 import com.eightmin4mile.goandroid.moviesapp2.data.MovieEntry;
@@ -23,6 +24,7 @@ public class MainViewModel extends AndroidViewModel {
 
     private LiveData<List<MovieEntry>> favorites;
     private MutableLiveData<List<MovieEntry>> movies;
+    private Menu menu;
     AppDatabase database;
 
     public MainViewModel(@NonNull Application application) {
@@ -77,5 +79,13 @@ public class MainViewModel extends AndroidViewModel {
             Utility.showToastMessage(this.getApplication(),
                     "No Available internet connection");
         }
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 }

@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -80,5 +82,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MainViewModel vm = ViewModelProviders.of(this)
+                .get(MainViewModel.class);
+        vm.setMenu(menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_sort:
+                return true;
+            case R.id.action_most_popular:
+                MainViewModel vm = ViewModelProviders.of(this)
+                        .get(MainViewModel.class);
+                Menu menu = vm.getMenu();
+                menu.findItem(R.id.action_sort).setTitle("Sort by: Most Popular");
+                //TODO: set preference,
+                //TODO: get the list from internet,
+                //TODO: hide this menu item
+                return true;
+            case R.id.action_highest_rated:
+                return true;
+            case R.id.action_favorites:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        //TODO: read from preference
+        //TODO: hide active menu
+        //TODO: update text on SORT BY: ???
+        return super.onPrepareOptionsMenu(menu);
+    }
 }
