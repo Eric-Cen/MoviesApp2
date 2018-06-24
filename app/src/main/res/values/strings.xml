@@ -16,5 +16,7 @@
     <string name="sort_by_rating">Highest Rating</string>
     <string name="sort_by_favorites">Favorites</string>
 
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+
 
 </resources>

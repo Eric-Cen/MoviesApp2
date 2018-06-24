@@ -19,6 +19,7 @@ android {
 
     buildTypes.each {
         it.buildConfigField 'String', 'MOVIE_DB_API_KEY', MyMovieApiKey
+        it.buildConfigField 'String', 'YOUTUBE_API_KEY', YouTubeApiKey
     }
 }
 
@@ -29,8 +30,9 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.1.0'
 
     implementation files('libs/retrofit-1.9.0.jar')
+    implementation files('libs/YouTubeAndroidPlayerApi.jar')
     implementation 'com.google.code.gson:gson:2.3.1'
-    compile 'com.squareup.picasso:picasso:2.3.3'
+    implementation 'com.squareup.picasso:picasso:2.3.3'
 
     implementation "android.arch.persistence.room:runtime:1.0.0"
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"

@@ -14,6 +14,7 @@ public interface MovieWebServiceProxy {
     // URL to the Movie Web service to use with the Retrofit service
     final String sMovie_Service_URL_Retro = "http://api.themoviedb.org/3";
     final String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
+    final String YOUTUBE_API_KEY = BuildConfig.YOUTUBE_API_KEY;
 
     // sort by highest rating
     final String SORT_BY_AVERAGE = "vote_average.desc";
