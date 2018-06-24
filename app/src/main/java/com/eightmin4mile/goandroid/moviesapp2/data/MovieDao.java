@@ -1,6 +1,7 @@
 package com.eightmin4mile.goandroid.moviesapp2.data;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -17,7 +18,7 @@ public interface MovieDao {
 
 
     @Query("SELECT * FROM movie ORDER BY rating")
-    LiveData<List<MovieEntry>> loadAllMovies();
+    List<MovieEntry> loadAllMovies();
 
     @Insert
     void insertMovie(MovieEntry movieEntry);
@@ -26,6 +27,6 @@ public interface MovieDao {
     void deleteMovie(MovieEntry movieEntry);
 
     @Query("SELECT * FROM movie WHERE id = :id")
-    LiveData<MovieEntry> loadMovieById(int id);
+    List<MovieEntry> loadMovieById(long id);
 
 }

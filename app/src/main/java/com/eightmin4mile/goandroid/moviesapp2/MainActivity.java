@@ -1,16 +1,19 @@
 package com.eightmin4mile.goandroid.moviesapp2;
 
+
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.Spinner;
 
 import com.eightmin4mile.goandroid.moviesapp2.data.AppDatabase;
 import com.eightmin4mile.goandroid.moviesapp2.data.MovieEntry;
@@ -30,19 +33,71 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static final String TAG = "MainActivity";
+    public static final String MOVIE_INFO = "movie";
 
     private AppDatabase mDb;
     private MovieAdapter mAdapter;
     private GridView gridView;
+
+    MainViewModel viewModel;
+
+    private Spinner spinner;
+    final String[] choices = {"Most Popular", "Highest Rating", "Favorites"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                MainActivity.this,
+//                android.R.layout.simple_dropdown_item_1line,
+//                choices);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(MainActivity.this,
+                R.array.choice_array, R.layout.spinner_style);
+        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setCustomView(R.layout.actionbar);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayUseLogoEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(false);
+
+        spinner = (Spinner)findViewById(R.id.spinner);
+        spinner.setAdapter(adapter);
+
+
+        int position = Utility.getSortOrderPosition(this,
+                Utility.getSortOrder(this));
+        spinner.setSelection(position, false);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+
+                 //avoid onItemSelected calls during initialization
+                    String selected = (String) spinner.getSelectedItem();
+                    Log.d(TAG, "onItemClick: spinner selected item = " + selected);
+                    Utility.setSortOrder(getApplicationContext(), selected);
+
+                    //run query to update the gridview by sort order
+                    viewModel.setMovies(null);
+                    viewModel.getMovies();
+                }
+
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
         gridView = (GridView)findViewById(R.id.grid_view_movies);
         mAdapter = new MovieAdapter(this,
-                R.layout.grid_item_layout);
+                R.layout.item_grid_layout);
 
         gridView.setAdapter(mAdapter);
 
@@ -52,25 +107,19 @@ public class MainActivity extends AppCompatActivity {
                 MovieEntry movie = mAdapter.getItem(position);
                 Log.d(TAG, "onItemClick: id: " + movie.getId() +
                             " \nname: " + movie.getTitle());
+                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                intent.putExtra(MOVIE_INFO, movie);
+                startActivity(intent);
             }
         });
 
         mDb = AppDatabase.getInstance(getApplicationContext());
         setupViewModel();
 
-
-        //
-        // TODO
-        // Option 1: to load data from ROOM database
-        // Option 2: to load data from the internet
-        // TODO 3 load detail view with movie id
-        // TODO 4 implement video data, recycleView for video data
-        // TODO 5 implement video player (youtube)
-
     }
 
     private void setupViewModel() {
-        MainViewModel viewModel = ViewModelProviders.of(this)
+        viewModel = ViewModelProviders.of(this)
                 .get(MainViewModel.class);
         viewModel.getMovies().observe(this, new Observer<List<MovieEntry>>() {
             @Override
@@ -82,45 +131,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        MainViewModel vm = ViewModelProviders.of(this)
-                .get(MainViewModel.class);
-        vm.setMenu(menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_sort:
-                return true;
-            case R.id.action_most_popular:
-                MainViewModel vm = ViewModelProviders.of(this)
-                        .get(MainViewModel.class);
-                Menu menu = vm.getMenu();
-                menu.findItem(R.id.action_sort).setTitle("Sort by: Most Popular");
-                //TODO: set preference,
-                //TODO: get the list from internet,
-                //TODO: hide this menu item
-                return true;
-            case R.id.action_highest_rated:
-                return true;
-            case R.id.action_favorites:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-
-        }
-
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        //TODO: read from preference
-        //TODO: hide active menu
-        //TODO: update text on SORT BY: ???
-        return super.onPrepareOptionsMenu(menu);
-    }
 }

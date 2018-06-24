@@ -2,6 +2,7 @@ package com.eightmin4mile.goandroid.moviesapp2;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -28,10 +29,10 @@ public class MovieAdapter extends ArrayAdapter<MovieEntry>{
     private Context mContext;
     private int layoutResourceId;
     private List<MovieEntry> movieData;
-    //private ArrayList movieData = new ArrayList();
+
     public static final String baseImageURL = "http://image.tmdb.org/t/p/";
 
-    public static final String imageSize = "w185/";
+    public static final String thumbnailSize = "w185/";
 
 
     public MovieAdapter(Context context,
@@ -75,7 +76,7 @@ public class MovieAdapter extends ArrayAdapter<MovieEntry>{
                         @NonNull ViewGroup parent) {
         ViewHolder holder = null;
         MovieEntry currentMovie = movieData.get(position);
-        Log.d(TAG, "getView: at item #" + position);
+        //Log.d(TAG, "getView: at item #" + position);
 
         if(convertView == null){
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
@@ -89,8 +90,14 @@ public class MovieAdapter extends ArrayAdapter<MovieEntry>{
         }
 
         holder.movieTitle.setText(currentMovie.getTitle());
+        if(currentMovie.isFavorites()){
+            //holder.movieTitle.setBackgroundColor(Color.RED);
+            //holder.movieTitle.setTextColor(Color.YELLOW);
+            holder.movieTitle.setTextColor(Color.RED);
 
-        String stringPath = baseImageURL + imageSize + movieData.get(position).getPoster();
+        }
+
+        String stringPath = baseImageURL + thumbnailSize + movieData.get(position).getPoster();
         Picasso.with(mContext)
                 .load(stringPath)
                 .error(R.drawable.image_not_available)
