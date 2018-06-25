@@ -46,10 +46,6 @@ public class MovieAdapter extends ArrayAdapter<MovieEntry>{
 
     public void setMovies(List<MovieEntry> movieEntries){
         movieData = movieEntries;
-//        Log.d(TAG, "setMovies: size = " + movieData.size());
-//        for ( MovieEntry m : movieData) {
-//            Log.d(TAG, "setMovies: movie name = " + m.getTitle());
-//        }
         notifyDataSetChanged();
     }
 
@@ -91,10 +87,7 @@ public class MovieAdapter extends ArrayAdapter<MovieEntry>{
 
         holder.movieTitle.setText(currentMovie.getTitle());
         if(currentMovie.isFavorites()){
-            //holder.movieTitle.setBackgroundColor(Color.RED);
-            //holder.movieTitle.setTextColor(Color.YELLOW);
             holder.movieTitle.setTextColor(Color.RED);
-
         }
 
         String stringPath = baseImageURL + thumbnailSize + movieData.get(position).getPoster();

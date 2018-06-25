@@ -6,13 +6,11 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.Menu;
 
 import com.eightmin4mile.goandroid.moviesapp2.data.AppDatabase;
 import com.eightmin4mile.goandroid.moviesapp2.data.MovieEntry;
 import com.eightmin4mile.goandroid.moviesapp2.retrofitMovie.MovieWebServiceProxy;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +21,6 @@ public class MainViewModel extends AndroidViewModel {
 
     private static final String TAG = "MainViewModel";
 
-   // private LiveData<List<MovieEntry>> favorites;
     private MutableLiveData<List<MovieEntry>> movies;
     AppDatabase database;
 
@@ -37,17 +34,13 @@ public class MainViewModel extends AndroidViewModel {
 
 
     public LiveData<List<MovieEntry>> getMovies(){
-        Log.d(TAG, "getMovies: here");
         if(movies==null){
-            Log.d(TAG, "getMovies: null");
             movies= new MutableLiveData<>();
             loadMovies();
         } else if (movies.getValue() == null){
-            Log.d(TAG, "getMovies: getValue() is null");
             loadMovies();
-        } else {
-            Log.d(TAG, "getMovies: not null");
         }
+
         return movies;
     }
 
@@ -56,6 +49,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     private void loadMovies(){
+        // get sort order from preference
         final String sortByUrl = Utility.getSortOrderUrl(this.getApplication(),
                 Utility.getSortOrder(this.getApplication()));
 
@@ -70,7 +64,6 @@ public class MainViewModel extends AndroidViewModel {
                 public void run() {
                     movies.postValue(database.movieDao()
                             .loadAllMovies());
-                    Log.d(TAG, "run: in diskIO: " + sortByUrl);
 
                 }
             });
@@ -83,46 +76,29 @@ public class MainViewModel extends AndroidViewModel {
                             Utility.getInternetMovies(sortByUrl);
 
                     if(movieList != null){
-
-                        int i=0;
                         // search the existing movies in favorites,
                         // update boolean value for the new movie list
                         for(MovieEntry newMovie : movieList) {
+
+                            //retrieve movie list from Favorites database by movie id
                             List<MovieEntry> movieEntries = database.movieDao()
                                     .loadMovieById(newMovie.getId());
+
                             boolean isAlreadyInFavorite;
-                            if(movieEntries.size() >= 1) {
+                            if(movieEntries.size() >= 1) {  // the database already have same movie
                                 isAlreadyInFavorite = true;
                             } else {
                                 isAlreadyInFavorite=false;
                             }
 
                             if(isAlreadyInFavorite){
-                              //  Log.d(TAG, "updating favorites: set to true");
                                 newMovie.setFavorites(true);
                             } else {
                                 newMovie.setFavorites(false);
-                               // Log.d(TAG, "updating favorites to false");
                             }
-
-                          //  Log.d(TAG, "updating favorites: " + i + " = " + isAlreadyInFavorite);
-                            ++i;
-
                         }
 
-                        int j=0;
-                        for(MovieEntry mm : movieList){
-                           // Log.d(TAG, "after updating favorites: " + j + " = " + mm.isFavorites());
-                            j++;
-                        }
                         movies.postValue(movieList);
-
-                        Log.d(TAG, "run: " + sortByUrl + " size = " + movieList.size());
-                        Log.d(TAG, "run: " + movieList.toString());
-                        //Log.d(TAG, "run: movies' size() = " + movies.getValue().size());
-
-                        // check if the movie entry is already in the Favorites DB or not
-
                     }
                 }
             });

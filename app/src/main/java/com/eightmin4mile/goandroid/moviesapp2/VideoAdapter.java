@@ -68,9 +68,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
     public void setVideoList(List<Video> videoData) {
         this.videoList = videoData;
-//        for(Video v : videoData){
-//            Log.d(TAG, "setVideoData: video name = " + v.getName());
-//        }
         notifyDataSetChanged();
     }
 

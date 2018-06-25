@@ -6,6 +6,9 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+/**
+ * Activity to show the full-size poster
+ */
 public class PosterActivity extends AppCompatActivity {
 
     private ImageView mMoviePoster;

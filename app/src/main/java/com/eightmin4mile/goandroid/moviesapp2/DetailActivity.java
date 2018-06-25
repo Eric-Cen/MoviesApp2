@@ -10,34 +10,27 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.eightmin4mile.goandroid.moviesapp2.data.AppDatabase;
 import com.eightmin4mile.goandroid.moviesapp2.data.MovieEntry;
-import com.eightmin4mile.goandroid.moviesapp2.retrofitMovie.MovieWebServiceProxy;
 import com.eightmin4mile.goandroid.moviesapp2.retrofitMovie.Review;
 import com.eightmin4mile.goandroid.moviesapp2.retrofitMovie.Video;
-import com.eightmin4mile.goandroid.moviesapp2.retrofitMovie.VideoResult;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
 
-import static java.util.logging.Logger.global;
-
+/**
+ * Detail activity to show details of a selected movie
+ * shows trailer videos in RecyclerView
+ * shows review videos in RecyclerView
+ * add or remove movie from favorites
+ */
 public class DetailActivity extends AppCompatActivity
         implements VideoAdapter.ItemClickListener {
-
-    // 1) show movie details - completed
-    // 2) retrieve videos list from internet, with retrofit - completed
-    // 3) show videos list into RecyclerView - completed
-    //TODO 4) play video in YouTube API
-    // 5) allow user to add a movie in favorite list - completed
 
     private static final String TAG = "DetailActivity";
     private final String imageSizeOriginal = "original/";
@@ -71,28 +64,33 @@ public class DetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        setTitle("Movie detail:");
+        setTitle(getString(R.string.movie_detail));
+
         initializeView();
 
+        // recyclerView for trailer video list
         videoRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         videoAdapter = new VideoAdapter(getApplicationContext(),
                 DetailActivity.this);
         videoRecyclerView.setAdapter(videoAdapter);
 
 
+        // recyclerView for review list
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         reviewAdapter = new ReviewAdapter(getApplicationContext());
         reviewRecyclerView.setAdapter(reviewAdapter);
 
 
+        // get database object
         mDb = AppDatabase.getInstance(getApplicationContext());
 
         MovieEntry movie = getIntent().getParcelableExtra(MainActivity.MOVIE_INFO);
 
         if (movie != null) {
+            Log.d(TAG, "onCreate: movie.toString() = " + movie.toString());
             mTitle.setText(movie.getTitle());
             mReleaseDate.setText(movie.getReleaseDate());
-            mVoteAverage.setText("movie.getVote_average() +  movie.getVote_count() ");
+            mVoteAverage.setText(movie.getRating() + "/10 (" + movie.getVote_count()+" votes)" );
             mMoviePlot.setText(movie.getSynopsis());
 
             mFavorites.setChecked(movie.isFavorites());
@@ -156,7 +154,6 @@ public class DetailActivity extends AppCompatActivity
 
                 if (stage) {
                     mFavorites.setChecked(true);
-                    Log.d(TAG, "onClick: set to true");
                     // add movie data to ROOM database
                     // if it is not already in favorites list
                     if (!movie.isFavorites()) {
@@ -169,11 +166,11 @@ public class DetailActivity extends AppCompatActivity
                     mFavorites.setChecked(false);
                     // remove movie data from ROOM database
                     removeFromFavorite(movie);
-                    Log.d(TAG, "onClick: set to false");
                 }
 
             }
         });
+
         videoRecyclerView = findViewById(R.id.rv_video);
         reviewRecyclerView = findViewById(R.id.rv_review);
 
@@ -218,11 +215,7 @@ public class DetailActivity extends AppCompatActivity
     @Override
     public void onItemClickListener(int itemId) {
         Video video = videoAdapter.getItem(itemId);
-        Log.d(TAG, "onItemClickListener: video is " + video.getName());
-
-        //completed - convert Vidoe object to parcelable
-        //TODO start a new intent to pass video as an object
-        //TODO on a new activity, play the video with youtube api
+       // Log.d(TAG, "onItemClickListener: video is " + video.getName());
 
         Intent intent = new Intent(getApplicationContext(),
                 VideoPlayActivity.class);
@@ -231,14 +224,9 @@ public class DetailActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    // add movie entry to Favorites in ROOM database
     public void addToFavorite(final MovieEntry movieEntry) {
-
         movieEntry.setFavorites(true);
-
-        //TODO how to update movie entry for gridview adapter
-        // user new launch mode?
-        // or use ROOM db observe
-
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -250,11 +238,8 @@ public class DetailActivity extends AppCompatActivity
 
     }
 
+    // remove movie entry from Favorites in ROOM database
     public void removeFromFavorite(final MovieEntry movieEntry) {
-
-        //TODO how to update movie entry for gridview adapter
-        // user new launch mode?
-        // or use ROOM db observe
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -265,4 +250,9 @@ public class DetailActivity extends AppCompatActivity
         });
     }
 
+    // force to make instance when launch MainActivity
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, MainActivity.class));
+    }
 }

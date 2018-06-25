@@ -25,7 +25,8 @@ public class MovieEntry implements Parcelable{
     private String title;
     private String poster;
     private String synopsis;
-    private int rating;
+    private double rating;
+    private int vote_count;
     @ColumnInfo(name = "release_date")
     private String releaseDate;
     private boolean favorites;
@@ -34,7 +35,8 @@ public class MovieEntry implements Parcelable{
                       String title,
                       String poster,
                       String synopsis,
-                      int rating,
+                      double rating,
+                      int vote_count,
                       String releaseDate,
                       boolean favorites){
         this.id = id;
@@ -42,6 +44,7 @@ public class MovieEntry implements Parcelable{
         this.poster = poster;
         this.synopsis = synopsis;
         this.rating = rating;
+        this.vote_count = vote_count;
         this.releaseDate = releaseDate;
         this.favorites = favorites;
     }
@@ -79,12 +82,20 @@ public class MovieEntry implements Parcelable{
         this.synopsis = synopsis;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public int getVote_count() {
+        return vote_count;
+    }
+
+    public void setVote_count(int vote_count) {
+        this.vote_count = vote_count;
     }
 
     public String getReleaseDate() {
@@ -113,7 +124,8 @@ public class MovieEntry implements Parcelable{
         this.title = in.readString();
         this.poster = in.readString();
         this.synopsis = in.readString();
-        this.rating  = in.readInt();
+        this.rating  = in.readDouble();
+        this.vote_count = in.readInt();
         this.releaseDate = in.readString();
         this.favorites = in.readByte() != 0;
     }
@@ -125,7 +137,8 @@ public class MovieEntry implements Parcelable{
         dest.writeString(title);
         dest.writeString(poster);
         dest.writeString(synopsis);
-        dest.writeInt(rating);
+        dest.writeDouble(rating);
+        dest.writeInt(vote_count);
         dest.writeString(releaseDate);
         dest.writeByte((byte) (favorites ? 1: 0));
     }

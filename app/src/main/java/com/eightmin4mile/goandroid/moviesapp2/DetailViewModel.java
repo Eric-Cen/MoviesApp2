@@ -1,14 +1,10 @@
 package com.eightmin4mile.goandroid.moviesapp2;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.eightmin4mile.goandroid.moviesapp2.data.AppDatabase;
 import com.eightmin4mile.goandroid.moviesapp2.data.MovieEntry;
 import com.eightmin4mile.goandroid.moviesapp2.retrofitMovie.Review;
 import com.eightmin4mile.goandroid.moviesapp2.retrofitMovie.Video;
@@ -76,21 +72,25 @@ public class DetailViewModel extends ViewModel {
         loadReviewData();
     }
 
+    // load trailer video list from the internet
     private void loadVideoData() {
-        //TODO need to check internet connection??
-        // TODO check if movieEntry is null??
         AppExecutors.getInstance().networkIO().execute(new Runnable() {
             @Override
             public void run() {
                 List<Video> newList = Utility.getInternetVideos(movieEntry.getValue().getId());
-                Log.d(TAG, "loadVideoData: from retrofit, newList.size() = " + newList.size());
-                videos.postValue(newList);
-               // Log.d(TAG, "loadVideoData: videos' size = " + videos.getValue().size() );
+                if(newList == null) {
+                    Log.d(TAG, "loadVideoData: newList from retrofit is null");
+                } else {
+                    //Log.d(TAG, "loadVideoData: from retrofit, newList.size() = "
+                      //  + newList.size());
+                    videos.postValue(newList);
+                }
             }
         });
 
     }
 
+    // load review list from the internet
     private void loadReviewData(){
         AppExecutors.getInstance().networkIO().execute(new Runnable() {
             @Override
@@ -99,15 +99,13 @@ public class DetailViewModel extends ViewModel {
                 if(reviewList == null) {
                     Log.d(TAG, "loadReviewData: reviewList is null");
                 } else {
-                    Log.d(TAG, "loadReviewData: from retrofit, reviewList.size() = "
-                            + reviewList.size());
+                  //  Log.d(TAG, "loadReviewData: from retrofit, reviewList.size() = "
+                  //          + reviewList.size());
                     reviews.postValue(reviewList);
                 }
 
             }
         });
     }
-
-
 
 }

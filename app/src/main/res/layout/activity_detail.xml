@@ -52,27 +52,23 @@
         android:layout_height="wrap_content"
         android:text="7/11/2015"
         android:layout_marginTop="8dp"
+        android:textSize="24dp"
         app:layout_constraintLeft_toRightOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/original_title"
 
+
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_movie_length"
-        android:text="120min"
-        app:layout_constraintTop_toBottomOf="@+id/release_date"
-        app:layout_constraintLeft_toRightOf="@+id/guideline"
-        />
 
     <TextView
         android:id="@+id/vote_avg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="N/A"
-        app:layout_constraintTop_toBottomOf="@+id/tv_movie_length"
+        app:layout_constraintTop_toBottomOf="@+id/release_date"
         app:layout_constraintLeft_toRightOf="@+id/guideline"
+        android:textStyle="bold"
+        android:textSize="12dp"
 
         />
 

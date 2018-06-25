@@ -49,8 +49,9 @@ public class RoomDBTest {
         MovieEntry movieEntry = new MovieEntry(id,
                 "movie name",
                 "poster link",
-                "synopsis",
-                1,
+                "movie description",
+                7.8,
+                99,
                 "1/1/2018",
                 true);
 

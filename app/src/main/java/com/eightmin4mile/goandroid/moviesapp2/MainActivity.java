@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.eightmin4mile.goandroid.moviesapp2.data.AppDatabase;
 import com.eightmin4mile.goandroid.moviesapp2.data.MovieEntry;
@@ -22,14 +23,18 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    // TODO
+    // Description
     // 1) Use AppExcutors to get the movie data from web
     // 2) display movie data in grid view
-    // 3) add movieResult to live data? or just store MovieEntry with ROOM
+    // 3) add movieResult to live data or just store MovieEntry with ROOM
     // 3) create a MovieDetail activity
     // 4) retrieve video list by movie id
     // 5) list videos under MovieDetail activity
     // 6) implement click to play video from youtube api
+    // extra
+    // a) implement expandable recyclerViews for review and video list
+    // b) implement Paging to load "endless" gridview on MainActivity
+    // c) implement Testing
 
 
     private static final String TAG = "MainActivity";
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private AppDatabase mDb;
     private MovieAdapter mAdapter;
     private GridView gridView;
+    private TextView stateTextView;
 
     MainViewModel viewModel;
 
@@ -49,10 +55,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-//                MainActivity.this,
-//                android.R.layout.simple_dropdown_item_1line,
-//                choices);
+        stateTextView = (TextView)findViewById(R.id.tv_main_msg);
+
+        // setup drop-down spinner on action bar
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(MainActivity.this,
                 R.array.choice_array, R.layout.spinner_style);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
@@ -85,15 +90,11 @@ public class MainActivity extends AppCompatActivity {
                     viewModel.getMovies();
                 }
 
-
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
-
-
 
         gridView = (GridView)findViewById(R.id.grid_view_movies);
         mAdapter = new MovieAdapter(this,
@@ -104,9 +105,13 @@ public class MainActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                MovieEntry movie = mAdapter.getItem(position);
+                //MovieEntry movie = mAdapter.getItem(position);
+                //get the movie from LiveData instead
+                MovieEntry movie = viewModel.getMovies().getValue().get(position);
+
                 Log.d(TAG, "onItemClick: id: " + movie.getId() +
                             " \nname: " + movie.getTitle());
+                Log.d(TAG, "onItemClick: move.toString=" + movie.toString());
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
                 intent.putExtra(MOVIE_INFO, movie);
                 startActivity(intent);
@@ -125,9 +130,37 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<MovieEntry> movieEntries) {
                 Log.d(TAG, "onChanged: Updating list of movies from LiveData in ViewModel");
-              mAdapter.setMovies(movieEntries);
+
+
+                if (movieEntries == null) {
+                    showErrorState();
+                } else if (movieEntries.size() == 0) {
+                    showEmptyState();
+                } else {
+                    showDataState();
+                }
+                mAdapter.setMovies(movieEntries);
             }
         });
+    }
+
+    private void showErrorState(){
+        stateTextView.setText(R.string.error_state);
+        stateTextView.setVisibility(View.VISIBLE);
+        gridView.setVisibility(View.INVISIBLE);
+    }
+
+    private void showEmptyState(){
+        stateTextView.setText(R.string.empty_state);
+        stateTextView.setVisibility(View.VISIBLE);
+        gridView.setVisibility(View.INVISIBLE);
+
+    }
+
+    public void showDataState(){
+        stateTextView.setText("");
+        stateTextView.setVisibility(View.GONE);
+        gridView.setVisibility(View.VISIBLE);
     }
 
 

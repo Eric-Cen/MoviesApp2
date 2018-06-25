@@ -54,25 +54,22 @@ public class Utility {
 
     public static List<MovieEntry> getMovieEntryList(List<Movie> movies){
         List<MovieEntry> movieEntries = new ArrayList<>();
-
-        // TODO how to present doulbe or long in ROOM database
         for ( Movie movie : movies) {
             MovieEntry newMovie = new MovieEntry(
                     movie.getId(),
                     movie.getTitle(),
                     movie.getPoster_path(),
                     movie.getOverview(),
-                    1, //TODO
+                    movie.getVote_average(),
+                    movie.getVote_count(),
                     movie.getRelease_date(),
                     false
             );
 
             movieEntries.add(newMovie);
-
         }
 
         return movieEntries;
-
     }
 
 
@@ -115,13 +112,12 @@ public class Utility {
             Log.d(TAG, "RetrofitError: " + e.getMessage());
         }
 
-        if(videoResult==null){
-            Log.d(TAG, "getInternetVideos: null return from retrofit");
-        } else {
-            Log.d(TAG, "getInternetVideos: videoResult.getResults().size() = "
-                    + videoResult.getResults().size());
-        }
-
+//        if(videoResult==null){
+//            Log.d(TAG, "getInternetVideos: null return from retrofit");
+//        } else {
+//            Log.d(TAG, "getInternetVideos: videoResult.getResults().size() = "
+//                    + videoResult.getResults().size());
+//        }
 
         return videoResult == null ? null : videoResult.getResults();
     }
@@ -144,12 +140,12 @@ public class Utility {
             Log.d(TAG, "RetrofitError: " + e.getMessage());
         }
 
-        if(reviewResult == null){
-            Log.d(TAG, "getInternetReviews: null return from retrofit");
-        } else {
-            Log.d(TAG, "getInternetReviews: videoResult.getResults().size() = "
-                    + reviewResult.getResults().size());
-        }
+//        if(reviewResult == null){
+//            Log.d(TAG, "getInternetReviews: null return from retrofit");
+//        } else {
+//            Log.d(TAG, "getInternetReviews: videoResult.getResults().size() = "
+//                    + reviewResult.getResults().size());
+//        }
 
         return  reviewResult == null ? null : reviewResult.getResults();
     }
@@ -205,7 +201,6 @@ public class Utility {
             // default value
             position = SORT_FAVORITES; // Favorites
         }
-
 
         return position;
 
