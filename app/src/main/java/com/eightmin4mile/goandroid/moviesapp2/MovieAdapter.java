@@ -86,8 +86,11 @@ public class MovieAdapter extends ArrayAdapter<MovieEntry>{
         }
 
         holder.movieTitle.setText(currentMovie.getTitle());
+
         if(currentMovie.isFavorites()){
             holder.movieTitle.setTextColor(Color.RED);
+        } else {
+            holder.movieTitle.setTextColor(Color.GRAY);
         }
 
         String stringPath = baseImageURL + thumbnailSize + movieData.get(position).getPoster();

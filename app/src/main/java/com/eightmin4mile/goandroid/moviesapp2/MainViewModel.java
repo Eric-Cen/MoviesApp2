@@ -30,16 +30,13 @@ public class MainViewModel extends AndroidViewModel {
         database = AppDatabase.getInstance(this.getApplication());
         Log.d(TAG, "MainViewModel: Actively retrieving the tasks from the database");
 
+        movies = new MutableLiveData<>();
     }
 
 
     public LiveData<List<MovieEntry>> getMovies(){
-        if(movies==null){
-            movies= new MutableLiveData<>();
-            loadMovies();
-        } else if (movies.getValue() == null){
-            loadMovies();
-        }
+
+        loadMovies();
 
         return movies;
     }

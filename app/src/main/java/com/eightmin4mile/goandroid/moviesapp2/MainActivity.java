@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 //get the movie from LiveData instead
                 MovieEntry movie = viewModel.getMovies().getValue().get(position);
 
-                Log.d(TAG, "onItemClick: id: " + movie.getId() +
+                Log.d(TAG, "onItemClick: movie id: " + movie.getId() +
                             " \nname: " + movie.getTitle());
                 Log.d(TAG, "onItemClick: move.toString=" + movie.toString());
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
@@ -119,8 +119,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mDb = AppDatabase.getInstance(getApplicationContext());
-        setupViewModel();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupViewModel();
     }
 
     private void setupViewModel() {
@@ -131,15 +136,14 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(@Nullable List<MovieEntry> movieEntries) {
                 Log.d(TAG, "onChanged: Updating list of movies from LiveData in ViewModel");
 
-
-                if (movieEntries == null) {
-                    showErrorState();
-                } else if (movieEntries.size() == 0) {
+                if(movieEntries != null && !movieEntries.isEmpty()){
+                    showDataState();
+                    mAdapter.setMovies(movieEntries);
+                } else if(movieEntries != null && movieEntries.size() == 0){
                     showEmptyState();
                 } else {
-                    showDataState();
+                    showErrorState();
                 }
-                mAdapter.setMovies(movieEntries);
             }
         });
     }

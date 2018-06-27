@@ -35,6 +35,9 @@ public class Utility {
     private static final int SORT_HIGHEST_RATING = 1;
     private static final int SORT_FAVORITES = 2;
 
+
+
+
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager)context
@@ -85,7 +88,8 @@ public class Utility {
         try {
             movieResult = mMovieWebServiceProxy
                     .getMovieResult(sortOrder,
-                            MovieWebServiceProxy.API_KEY);
+                            MovieWebServiceProxy.API_KEY,
+                            MovieWebServiceProxy.REGION);
         } catch (RetrofitError e){
             Log.d(TAG, "RetrofitError: " + e.getMessage());
         }
@@ -177,7 +181,7 @@ public class Utility {
         } else if(sortBy.equals(context.getApplicationContext()
                 .getResources()
                 .getString(R.string.sort_by_rating))){
-            returnVal = MovieWebServiceProxy.SORT_BY_AVERAGE;
+            returnVal = MovieWebServiceProxy.SORT_BY_TOP_RATED;
         } else {
             // default value
             returnVal = MovieWebServiceProxy.SORT_BY_FAVORITES;

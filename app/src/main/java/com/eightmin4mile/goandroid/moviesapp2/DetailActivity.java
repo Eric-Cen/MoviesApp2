@@ -250,9 +250,4 @@ public class DetailActivity extends AppCompatActivity
         });
     }
 
-    // force to make instance when launch MainActivity
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(this, MainActivity.class));
-    }
 }
