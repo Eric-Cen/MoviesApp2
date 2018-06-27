@@ -31,16 +31,9 @@ public interface MovieWebServiceProxy {
     final String SORT_BY_FAVORITES = "favorites";
 
 
-    /**
-     * Method used to query the movie service web service
-     * http://api.themoviedb.org/3/discover/movie?sort_by=top_rated&api_key=[replace_with_api_key]
-     * http://api.themoviedb.org/3/discover/movie?sort_by=popular&api_key=[replace_with_api_key]
-     */
-
 
     // https://api.themoviedb.org/3/movie/top_rated?api_key=[replace_with_api_key]&region=US
     //https://api.themoviedb.org/3/movie/popular?api_key=[replace_with_api_key]&region=US
-
     @GET("/movie/{sort_by}")
     MovieResult getMovieResult(@Path("sort_by") String searchString,
                                @Query("api_key") String apiKey,
