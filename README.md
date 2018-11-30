@@ -4,7 +4,7 @@ Project 4 of Udacity's Android Developer Nanodegree
 
 This app connects to theMovieDB Api and retrieves movie data by top_rated, 
 or popular.  It shows the list of movies in recyclerViews.  Users can view detail information about a selected movie, 
-add a movie to or delete from the Favorites list.  It also plays trailer videos in Youtube player.
+add a movie to or delete from the Favorites list.  It also plays trailer videos in the embedded Youtube player.
 
 
 
